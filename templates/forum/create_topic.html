@@ -1,0 +1,47 @@
+{% extends '../common/base.html' %}
+{% block content %}
+<div class="bg-light mt-3 p-3">
+  <h4 class="font-weight-bold headings mb-3 text-primary">Create Topic</h4>
+  <form method='post'>
+    {% csrf_token %}
+    {% for errors in form.non_field_errors  %}
+    <div class='alert alert-warning'>
+      {{errors}}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    {% endfor %}
+    {% for message in messages  %}
+    <div class='alert alert-{{message.tags}}'>
+      {{message}}
+    </div>
+    {% endfor %}
+    {{form.media}}
+    <div class="form-group">
+      {% for error in form.title.errors  %}
+      <div class='alert alert-warning mb-0'>{{error}}</div>
+      {% endfor %}
+      <label style="font-size: 16px;" class=''>Title</label>
+      {{form.title}}
+    </div>
+
+    <div class="form-group">
+      {% for error in form.category.errors  %}
+      <div class='alert alert-warning mb-0'>{{error}}</div>
+      {% endfor %}
+      <label style="font-size: 16px;" class=''>Category</label>
+      {{form.category}}
+    </div>
+
+    <div class="form-group">
+      <label style="font-size: 16px;" class='d-block'>Content</label>
+      {% for error in form.content.errors  %}
+      <div class='alert alert-warning mb-0'>{{error}}</div>
+      {% endfor %}
+      {{form.content}}
+    </div>
+    <button class="btn btn-success btn-lg" type="submit">Submit</button>
+  </form>
+</div>
+{% endblock content %}

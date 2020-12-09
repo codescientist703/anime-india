@@ -1,0 +1,73 @@
+{% extends '../common/base.html' %}
+{% block content %}
+<div class="bootstrap snippets bootdey bg-light">
+  <h4 class="text-primary mx-3 py-3">Edit Profile</h4>
+  <hr>
+  <form method='post' enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row">
+      <!-- left column -->
+      <div class="col-md-3">
+        <div class="text-center m-3">
+          <img src="{{request.user.profile.image.url}}" class="avatar img-circle" alt="avatar" height='64px'
+            width='64px'>
+          <h6>Upload a different photo...</h6>
+          {{form.image}}
+        </div>
+      </div>
+      <!-- edit form column -->
+      <div class="col-md-9 personal-info horizontal-form">
+        {% for message in messages  %}
+        <div class='alert alert-{{message.tags}} alert-dismissable'>
+          <a class="panel-close close" data-dismiss="alert">×</a>
+          <i class="fa fa-coffee"></i>
+          {{message}}
+        </div>
+        {% endfor %}
+        <h3>Personal info</h3>
+        {% for errors in form.non_field_errors  %}
+        <div class='alert alert-warning'>
+          {{errors}}
+        </div>
+        {% endfor %}
+
+        {{form.about_me.errors}}
+        <div class="form-group">
+          <label class="col-lg-3 control-label">About me:</label>
+          <div class="col-lg-8">
+            {{form.about_me}}
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-lg-3 control-label">location</label>
+          <div class="col-lg-8">
+            {{form.location}}
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-lg-3 control-label">favourite animes: </label>
+          <div class="col-lg-8">
+            {{form.favourite_anime}}
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-lg-3 control-label">favourite genres: </label>
+          <div class="col-lg-8">
+            {% for value, text in form.favourite_genres.field.choices %}
+            <div class="ui slider checkbox">
+              <input name="{{ form.favourite_genres.name }}" type="checkbox" value="{{ value }}"
+                {% if value in form.checked_favourite_genres %} checked="checked" {% endif %}>
+              <label>{{ text }}</label>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="form-group">
+          <button type="submit" class='btn btn-success mb-3 ml-3'>Update</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<hr>
+{% endblock content %}

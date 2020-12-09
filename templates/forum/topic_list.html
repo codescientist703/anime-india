@@ -1,0 +1,152 @@
+{% extends '../common/base.html' %}
+{% load static %}
+{% load bootstrap_pagination %}
+{% load check_user %}
+{% block title %}
+Anime India- {{category}} category
+{% endblock title %}
+{% block content %}
+
+<ol class="breadcrumb mt-3">
+  <li class="breadcrumb-item">
+    <a href="{% url 'home' %}"><span>Home</span></a>
+  </li>
+  <li class="breadcrumb-item">
+    <a href="#"><span>{{category}}</span></a>
+  </li>
+</ol>
+<div class="table-responsive bg-white" style="margin-top: 2rem">
+  <table class="table table-striped" id='table_id'>
+    <thead style="background: #732c7b">
+      <tr>
+        <th style="width: 600px; color: #f4f8fb">General
+          <div class="d-inline-flex flex-column ml-3 mt-0 mb-0">
+            <a href="?order-by=title&order=asc"><i class='fa fa-caret-up' style='color: white'></i></a>
+            <a href="?order-by=title&order=dsc"><i class='fa fa-caret-down' style='color: white'></i></a>
+          </div>
+        </th>
+        <th class="hcolumn-1" style="color: #ffffff; width:300px">Statistics<div
+            class="d-inline-flex flex-column ml-3 mt-0 mb-0">
+            <a href="?order-by=views&order=asc"><i class='fa fa-caret-up' style='color: white'></i></a>
+            <a href="?order-by=views&order=dsc"><i class='fa fa-caret-down' style='color: white'></i></a>
+          </div>
+        </th>
+        <th class="hcolumn-1 p-4" style="color: #ffffff; width: 300px">
+          Last Reply
+          <a href="?"><i class='fa fa-caret-up ml-2' style='color: white'></i></a>
+
+        </th>
+        {% if request.user|has_group:"moderator" or request.user.is_superuser%}
+        <th class="p-4" style="color: #ffffff; width: 200px">
+          Moderator Actions
+        </th>
+        {% endif %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for object in topic_list %}
+      <tr id='topic-{{object.topic.id}}'>
+        <td>
+          <i class="fas fa-sticky-note float-left" style="font-size: 30px; margin-right: 1rem"></i>
+          <div class="d-inline">
+            <a href="{% url 'reply_list' object.topic.slug %}" class='text-break'>{{object.topic.title}}</a>
+            {% if object.topic.is_pinned %}
+            <i class="fas fa-thumbtack m-2" id='pin-{{object.topic.id}}'></i>
+            {% else %}
+            <i class="fas fa-thumbtack m-2 d-none" id='pin-{{object.topic.id}}'></i>
+            {% endif %}
+            {% if object.topic.is_locked %}
+            <i class="fas fa-lock m-2" id='lock-{{object.topic.id}}'></i>
+            {% else %}
+            <i class="fas fa-lock m-2 d-none" id='lock-{{object.topic.id}}'></i>
+            {% endif %}
+            <p class="label mt-1">by {{object.topic.user.username}}, {{object.topic.published_date}}</p>
+          </div>
+        </td>
+        <td class="hcolumn-1">
+          <p class="label mb-0">{{object.replies}} response</p>
+          <p class="label mb-0">{{object.topic.views}} views</p>
+        </td>
+        <td class="hcolumn-1">
+          <img class="float-left mb-2" src="{{object.last_image}}" style="width: 40px; height: 40px" />
+          <div class="d-inline-block ml-lg-3">
+            <small class="d-block">By <a
+                href="{% url 'profile' object.last_username %}">{{object.last_username}}</a></small><small>{{object.last_date}}<br /></small>
+          </div>
+        </td>
+        {% if request.user|has_group:"moderator" or request.user.is_superuser %}
+        <td>
+          <div class="btn-group">
+            <button class="btn btn-success" id='{{object.topic.id}}' name='pin'>
+              {% if object.topic.is_pinned %}
+              Unpin
+              {% else %}
+              Pin
+              {% endif %}
+            </button>
+            <button class="btn btn-info" id='{{object.topic.id}}' name='lock'>
+              {% if object.topic.is_locked %}
+              Unlock
+              {% else %}
+              Lock
+              {% endif %}
+            </button>
+            <button class="btn btn-danger" id='{{object.topic.id}}' name='delete'>Delete</button>
+          </div>
+        </td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<nav
+  class="d-flex justify-content-center align-items-center justify-content-sm-center align-items-sm-center justify-content-lg-center align-items-lg-start"
+  style="margin: 1rem 0rem">
+  {% bootstrap_paginate page_obj %}
+</nav>
+{% endblock content %}
+
+{% block js %}
+<script>
+  $(document).ready(function () {
+    $("button").click(function () {
+      const id = $(this).attr('id')
+      const type = $(this).attr('name')
+      const selector = $(this)
+      $.ajax({
+        type: 'POST',
+        url: "{% url 'topic_list' category %}",
+        data: {
+          'topic_id': id,
+          'type': type,
+          'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        dataType: "json",
+        success: function (response) {
+          if (type === 'delete') {
+            $(`#topic-${id}`).remove()
+
+          } else if (type === 'pin') {
+            if (response.is_pinned == true) {
+              $(`#pin-${id}`).removeClass('d-none')
+              $(selector).text('Unpin')
+            } else {
+              $(`#pin-${id}`).addClass('d-none')
+              $(selector).text('Pin')
+            }
+          } else {
+            if (response.is_locked == true) {
+              $(`#lock-${id}`).removeClass('d-none')
+              $(selector).text('Unlock')
+            } else {
+              $(`#lock-${id}`).addClass('d-none')
+              $(selector).text('Lock')
+            }
+          }
+        }
+      })
+    });
+  })
+</script>
+{% endblock js %}

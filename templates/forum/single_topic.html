@@ -1,0 +1,286 @@
+{% extends '../common/base.html' %}
+{% load static %}
+{% load bootstrap_pagination %}
+{% load check_user %}
+{% block content %}
+<ol class="breadcrumb" style="margin-top: 2rem;">
+  <li class="breadcrumb-item"><a href="{% url 'home' %}"><span>Home</span></a></li>
+  <li class="breadcrumb-item"><a href="{% url 'topic_list' category %}"><span>{{category}}</span></a></li>
+  <li class="breadcrumb-item"><a href="{% url 'reply_list' topic_id %}"><span>{{title}}</span></a></li>
+</ol>
+{% for object in  reply_list %}
+
+<div class="row display-flex"
+  style="text-shadow: 0px 0px;margin-right: 0.5rem;margin-left: 0.5rem;border-width: 2px;border-color: #421c52;border-bottom-style: solid;">
+  <section class="text-white p-2 mt-3 d-flex justify-content-between" style='background: #732c7b;width: 100%'>
+    <p class='mb-0'>{{object.reply.user.username}}</p>
+    <p class='mb-0 d-inline-flex'>{{object.reply.published_date}}</p>
+  </section>
+  <div class="col-xs-12 col-md-3  bg-primary">
+    <div class="d-flex flex-grow-1 align-items-center align-content-center profile-container" style="padding: 1rem;">
+      <div><img class="profile-img" src="{% static 'img/avatar.png' %}" style="width: 60px;margin-bottom: 0.5rem;">
+      </div>
+      <div class='ml-0'>
+        <a href="{% url 'profile' object.reply.user.username %}">
+          <small
+            class="text-center d-flex justify-content-lg-center pure-white mb-1">{{object.reply.user.username}}</small>
+        </a>
+        <small class="d-flex justify-content-lg-center pure-white">Join Date:
+          {{object.reply.user.date_joined|date}}</small>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-9 bg-light ml-0">
+    {% if  request.user.is_authenticated %}
+    <div class='d-flex justify-content-end' id='mod-{{object.reply.id}}'>
+      {% if object.reply.user == request.user and object.reply.is_deleted == False%}
+
+      <a href="{% url 'edit_reply' object.reply.id %}" class='text-right mb-0' data-toggle="tooltip"
+        data-placement="bottom" title="edit the post">
+        <i class='fas fa-edit btn text-right text-primary mb-0'></i>
+      </a>
+      {% endif %}
+      {% if  request.user|has_group:"moderator" or request.user.is_superuser   %}
+      {% if  object.reply.is_deleted == False %}
+      <a class='text-right mb-0' data-toggle="modal" data-target="#deleteModal-{{object.reply.id}}">
+        <i class='fas fa-trash btn text-right text-primary mb-0' data-toggle="tooltip" data-placement="bottom"
+          title="delete the post"></i>
+      </a>
+
+      <!-- Delete Modal -->
+      <div class="modal fade" id="deleteModal-{{object.reply.id}}" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Modal title</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              Do you want to delete this comment ?
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+              <button type="button" class="btn btn-danger comment-delete" id='{{object.reply.id}}'
+                data-dismiss="modal">Yes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+      {% endif %}
+    </div>
+    {% endif %}
+    <div class='text-break mb-1 mt-1' id='content-{{object.reply.id}}'>
+      {% if object.reply.is_deleted %}
+      <p class="text-muted font-italic">Comment Deleted</p>
+      {% else %}
+      {{object.reply.content | wordwrap:5 | safe }}
+      {% endif %}
+    </div>
+    <div class='d-flex' style='position: absolute; bottom: 0px; right:20px' id='feature-{{object.reply.id}}'>
+      {% if request.user.is_authenticated and object.reply.is_deleted == False%}
+      {% if object.flagged == True %}
+      <p class='mb-0'>
+        {% if request.user|has_group:"moderator" or request.user.is_superuser %}
+        <small class='mr-2 mb-1' id='flag_counter-{{object.reply.id}}'>{{object.reply.total_flags}}</small>
+        {% endif %}
+
+        <a style="font-size:24px;color: blue;" disabled><i class="fa fa-flag fa-border mr-5" data-toggle="tooltip"
+            data-placement="bottom" title="Post already flagged"></i>
+        </a>
+      </p>
+
+      {% else %}
+      <p class='mb-0'>
+        {% if request.user|has_group:"moderator" or request.user.is_superuser %}
+        <small class='mr-2 mb-1' id='flag_counter-{{object.reply.id}}'>{{object.reply.total_flags}}</small>
+        {% endif %}
+        <a style="font-size:24px;color: lightblue;" id='flag-{{object.reply.id}}' data-toggle="modal"
+          data-target="#confirmationModal-{{object.reply.id}}"><i class="fa fa-flag fa-border mr-5"
+            data-toggle="tooltip" data-placement="bottom" title="Flag the post"></i>
+        </a>
+        <!-- Modal -->
+        <div class="modal fade" id="confirmationModal-{{object.reply.id}}" tabindex="-1" role="dialog"
+          aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                Do you want to flag this post for spam/abusive content ?
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-primary flag" id='{{object.reply.id}}'
+                  data-dismiss="modal">Yes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </p>
+      {% endif %}
+      {% if object.liked == True %}
+      <p class='text-right mb-0'>
+        <small class='mb-0 mr-2' id='like_counter-{{object.reply.id}}'>{{object.reply.total_likes}}</small>
+        <a name={{object.reply.id}} style="font-size:24px;color: blue;" class='likin text-right'
+          id='like{{object.reply.id}}'>
+          <i class="fa fa-thumbs-up" data-toggle="tooltip" data-placement="bottom" title="like the post"></i></a>
+      </p>
+      {% else %}
+      <p class='text-right mb-0'>
+        <small class='mb-0 mr-2' id='like_counter-{{object.reply.id}}'>{{object.reply.total_likes}}</small>
+        <a name={{object.reply.id}} style="font-size:24px;color: lightblue;" class='likin text-right'
+          id='like{{object.reply.id}}'><i class="fa fa-thumbs-up" data-toggle="tooltip" data-placement="bottom"
+            title="like the post"></i></a>
+      </p>
+
+      {% endif %}
+      {% else %}
+      <p class='text-right mb-0'>
+        {% if object.reply.is_deleted == False %}
+        <small class='mb-0 mr-2' id='like_counter-{{object.reply.id}}'>{{object.reply.total_likes}}</small>
+        <i name={{object.reply.id}} style="font-size:24px;color: blue;" class='text-right fa fa-thumbs-up'
+          data-toggle="tooltip" data-placement="bottom" title="number of likes"></i>
+      </p>
+      {% endif %}
+
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endfor %}
+<nav
+  class="d-flex justify-content-center align-items-center justify-content-sm-center align-items-sm-center justify-content-lg-center align-items-lg-start"
+  style="margin: 1rem 0rem">
+  {% bootstrap_paginate page_obj %}
+</nav>
+{% if user.is_authenticated and is_locked == False%}
+{% for message in messages  %}
+<div class='alert alert-{{message.tags}} alert-dismissible fade show' role="alert">
+  {{message}}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+{% endfor %}
+<div class="my-3 text-primary d-block">Post Reply: </div>
+<div class='d-flex flex-md-row flex-column'>
+
+  <div class="bg-primary mb-0 d-inline-flex">
+    <div class="d-flex flex-grow-1 align-items-center align-content-center profile-container" style="padding: 1rem;">
+      <div><img class="profile-img" src="{% static 'img/avatar.png' %}" style="width: 60px;margin-bottom: 0.5rem;">
+      </div>
+      <div>
+        <p class="d-flex justify-content-lg-center justify-content-xl-center mb-0">
+          <a href="{% url 'profile' request.user.get_username %}" class='text-white'>{{request.user.get_username}}
+          </a>
+        </p>
+        <small class="text-center d-flex justify-content-lg-center pure-white">Admin</small>
+        <small class="d-flex justify-content-lg-center pure-white">Join Date: {{request.user.date_joined|date}}</small>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <form action="" method="post" class='d-flex flex-column'>
+      {% csrf_token %}
+      {{form.media}}
+      {{form.content}}
+      <button class="btn btn-info" role="button" type='submit'><i class="fa fa-reply"></i><small></small><strong
+          style="margin-left: 0.5rem;">Submit</strong>
+      </button>
+    </form>
+  </div>
+</div>
+{% elif is_locked == True%}
+<div class="alert alert-info" role="alert">
+  This topic is <strong>locked</strong>. No user can post any comment on this topic !
+</div>
+{% endif %}
+{% endblock content %}
+{% block js %}
+<script>
+  window.onload = function () {
+    allImages = document.getElementsByTagName('img')
+    for (i = 0; i < allImages.length; i++) {
+      allImages[i].classList.add('mw-100')
+    }
+    $("p").addClass("text-break");
+    const status = "{{is_locked}}"
+    if (!status) {
+      CKEDITOR.instances.id_content.setData(localStorage.getItem("{{topic_id}}-draft"));
+      CKEDITOR.instances.id_content.on('change', function (e) {
+        var currentData = CKEDITOR.instances.id_content.getData();
+        localStorage.setItem("{{topic_id}}-draft", currentData)
+      });
+    }
+    $('.likin').click(function () {
+      $.ajax({
+        type: "POST",
+        url: "{% url 'reply_list' topic_id %}",
+        data: {
+          'content_id': $(this).attr('name'),
+          'operation': 'like_submit',
+          'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        dataType: "json",
+        success: function (response) {
+          selector = document.getElementsByName(response.reply_id);
+          if (response.liked == true) {
+            $(`#like${response.reply_id}`).css("color", "blue");
+
+          } else if (response.liked == false) {
+            $(`#like${response.reply_id}`).css("color", "lightblue");
+          }
+          $(`#like_counter-${response.reply_id}`).text(response.likes)
+        }
+      });
+    })
+    $('.flag').click(function () {
+      id = $(this).attr('id')
+      $.ajax({
+        type: "POST",
+        url: "{% url 'reply_list' topic_id %}",
+        data: {
+          'content_id': id,
+          'operation': 'flag_submit',
+          'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        dataType: "json",
+        success: function (response) {
+          $(`#flag-${response.reply_id}`).css("color", "blue");
+          $(`#flag-${response.reply_id}`).css("pointer-events", "none");
+          $(`#flag_counter-${response.reply_id}`).text(response.total_flags)
+        }
+      })
+    })
+    $('.comment-delete').click(function () {
+      id = $(this).attr('id')
+      console.log(id)
+      $.ajax({
+        type: "POST",
+        url: "{% url 'reply_list' topic_id %}",
+        data: {
+          'content_id': id,
+          'operation': 'delete_reply',
+          'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        dataType: "json",
+        success: function (response) {
+          $(`#mod-${id}`).removeClass('d-flex').addClass('d-none')
+          $(`#feature-${id}`).removeClass('d-flex').addClass('d-none')
+          $(`#content-${id}`).html("<p class='text-muted font-italic'>Comment Deleted</p>")
+        }
+      })
+    })
+
+  }
+</script>
+{% endblock js %}

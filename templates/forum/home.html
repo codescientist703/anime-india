@@ -1,0 +1,79 @@
+{% extends '../common/base.html' %} {% load static %} {% block content %}
+<ol class="breadcrumb mt-3">
+  <li class="breadcrumb-item">
+    <a href="{% url 'home' %}"><span>Home</span></a>
+  </li>
+</ol>
+<div class="row">
+  <div class="col-lg-9" style="padding: -1px; padding-bottom: 10px">
+    <div class="table-responsive bg-white">
+      <table class="table table-striped">
+        <thead style="background: #732c7b">
+          <tr>
+            <th class="text-white" style="width: 300px">Main Category</th>
+            <th class="hcolumn-1 text-white">Topics</th>
+            <th class="hcolumn-1 text-white">Posts</th>
+            <th class="hcolumn-1 text-white">Last Post</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for object in table_data|slice:":5" %}
+          <tr>
+            <td>
+              <i class="fa fa-comments float-left" style="font-size: 30px; margin-right: 1rem"></i>
+              <div class="d-inline-block">
+                <a class="text-primary text-break" href="{% url 'topic_list' object.category.name %}">{{object.category.name}}</a>
+                <p class="label">{{object.category.description}}</p>
+              </div>
+            </td>
+            <td class="hcolumn-1">{{object.count}}</td>
+            <td class="hcolumn-1">{{object.replies}}</td>
+            
+            <td class="hcolumn-1">
+            {% if object.count != 0 %}
+              <img class="float-left" src="{{object.latest.user.profile.image.url}}"
+                style="width: 30px; height: 30px" />&nbsp;
+              &nbsp;
+              <div class="d-inline-block">
+                <a href="{% url 'reply_list'  object.latest.slug %}" class='text-break'>{{object.latest.title}}</a><small
+                  class="d-block">by&nbsp;<a class="text-primary"
+                    href="{% url 'profile'  object.latest.user.username%}">{{object.latest.user.username}}</a></small>
+              </div>
+               {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="col lg-3">
+    <div style="background: #732c7b; padding: 6px 0px">
+      <h5 class="text-center text-white" style="border-style: none">
+        About Us
+      </h5>
+    </div>
+    <p class="text-break bg-light px-3 py-2  text-body">
+      We are die hard fan of anime. My dream is to make this site the premiere
+      destinations of all indian anime fans so we can unite together.
+    </p>
+    <div style="background: #732c7b; padding: 6px 0px">
+      <h5 class="text-white text-center" style="border-style: none">
+        Recent Posts
+      </h5>
+    </div>
+    {% for topic in recent_data %}
+    <div class="px-3 py-2 bg-light mb-10">
+
+      <a class="font-weight-bold text-break" href="{% url 'reply_list' topic.slug %}"
+        style="border-color: rgb(0, 0, 0)">{{topic.title}}</a>
+
+      <p class="text-muted label mb-0" >
+        By {{topic.user.username}}
+      </p>
+      <small> {{topic.published_date}} </small>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock content %}

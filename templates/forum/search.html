@@ -1,0 +1,83 @@
+{% extends '../common/base.html' %}
+{% block content %}
+<div class='bg-white' style='min-height: 58vh'>
+  <h1 class='text-primary p-3 text-primary headings m-1'><strong>Search</strong> in the forum -</h1>
+  <form action="" method="get">
+    <div class="input-group p-3">
+      <div class="input-group-prepend">
+        <select id="inputGroupSelect01" required name='category'>
+          <option value=''>Search in</option>
+          <option value="topic">Topics</option>
+          <option value="user">Users</option>
+        </select>
+      </div>
+      <input type="text" class="form-control" placeholder='Search for topic or user' id='search' name='input' required>
+      <div class='input-group-append'>
+        <button type="submit" class='btn btn-success'>Submit</button>
+      </div>
+    </div>
+  </form>
+  {% if type %}
+  <h3 class='alert alert-info p-3 m-2'>FOUND {{data.count}} RESULTS</h3>
+  {% endif %}
+
+  {% if type == 'topic' %}
+  <div class="row m-3 py-2">
+    {% for object in data  %}
+    <div class="col-12 mt-3">
+      <div class="card">
+        <div class="card-horizontal">
+          <div class="img-square-wrapper">
+            <img src="{{object.user.profile.image.url}}" alt="{{object.user.username}}" height=64 width=64>
+          </div>
+          <div class="card-body">
+            <a href='{% url 'reply_list' object.slug %}'>
+              <h4 class="card-title">{{object.title}}</h4>
+            </a>
+          </div>
+        </div>
+        <div class="card-footer">
+          <small class="text-muted">Posted on {{object.published_date}}</small>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% elif type == 'user' %}
+  <div class="row m-3 py-2">
+    {% for object in data  %}
+    <div class="col-12 mt-3">
+      <div class="card">
+        <div class="card-horizontal">
+          <div class="img-square-wrapper">
+            <img src="{{object.profile.image.url}}" alt="{{object.username}}" height=64 width=64>
+          </div>
+          <div class="card-body">
+            <a href="{% url 'profile' object.username %}">
+              <h4 class="card-title">{{object.username}}</h4>
+            </a>
+          </div>
+        </div>
+        <div class="card-footer">
+          <small class="text-muted">Joined on {{object.date_joined}}</small>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% endif %}
+
+
+</div>
+{% endblock content %}
+{% block js %}
+<script>
+  $(function () {
+    $("#search").autocomplete({
+      source: '{% url 'search' %}'
+    });
+  });
+</script>
+{% endblock js %}

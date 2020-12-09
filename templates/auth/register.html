@@ -1,0 +1,61 @@
+{% extends '../common/base.html' %}
+{% block content %}
+<div class="register-photo" style='background: #e5c9f5;'>
+  <div class="form-container">
+    {% for errors in form.non_field_errors  %}
+    <div class='alert alert-warning'>
+      {{errors}}
+    </div>
+    {% endfor %}
+    <div class="image-holder"></div>
+    <form method="post" style="background: #f4f8fb;">
+      {% csrf_token %}
+      {% for message in messages  %}
+      <div class='alert alert-{{message.tags}}'>
+        {{message}}
+      </div>
+      {% endfor %}
+      <h2 class="text-center"><strong>Create</strong> an account.</h2>
+
+      <div class="form-group">
+        {% for error in form.username.errors  %}
+        <div class='alert alert-warning mb-0'>{{error}}</div>
+        {% endfor %}
+        {{ form.username }}
+      </div>
+
+
+      <div class="form-group">
+        {% for error in form.email.errors  %}
+        <div class='alert alert-warning mb-0'>{{error}}</div>
+        {% endfor %}
+        {{ form.email }}
+      </div>
+
+
+      <div class="form-group">
+        {% for error in form.password1.errors  %}
+        <div class='alert alert-warning mb-0'>{{error}</div>
+          {% endfor %}
+          {{ form.password1 }}
+        </div>
+
+
+        <div class="form-group">
+          {% for error in form.password2.errors  %}
+          <div class='alert alert-warning mb-0'>{{error}}</div>
+          {% endfor %}
+          {{ form.password2 }}
+        </div>
+
+        <div class="form-group">
+          <div class="form-check"><label class="form-check-label "><input class="form-check-input" type="checkbox"
+                required>I agree to the license terms.</label></div>
+        </div>
+        <div class="form-group"><button class="btn btn-primary btn-block" type="submit"
+            style="background: #732c7b;">Sign Up</button></div><a class="already" href="{% url 'login' %}">You already
+          have an account? Login here.</a>
+    </form>
+  </div>
+</div>
+{% endblock content %}

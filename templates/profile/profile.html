@@ -1,0 +1,117 @@
+{% extends '../common/base.html' %}
+{% load thumbnail %}
+{% block content %}
+
+<div class="row">
+  <div class="col-md-4 col-xl-3">
+    <div class="card mb-3">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Profile Details</h5>
+      </div>
+      <div class="card-body text-center">
+        <img src="{{ profile.image.url }}" alt="{{profile.user.username}}" class="img-fluid rounded-circle mb-2">
+        <h4 class="card-title mb-0">{{profile.user.username}}</h4>
+      </div>
+      <hr class="my-0">
+      <hr class="my-0">
+      <div class="card-body">
+        <h5 class="card-title text-primary">About</h5>
+        <ul class="list-unstyled mb-0">
+          <li class="mb-1">
+            Joined: {{profile.user.date_joined | date}}
+          </li>
+          {% if profile.about_me %}
+          <li class="mb-1">
+            About Me: {{profile.about_me}}
+          </li>
+          {% endif %}
+          {% if profile.location %}
+          <li class="mb-1">
+            Location: {{profile.location}}
+          </li>
+          {% endif %}
+          <li class="mb-1">
+            Posts: {{topicCount}}
+          </li>
+          <li class="mb-1">
+            Replies: {{replyCount}}
+          </li>
+        </ul>
+      </div>
+      <hr class="my-0">
+      <div class="card-body">
+        <h5 class="card-title text-primary">Anime</h5>
+        <ul class="list-unstyled mb-0">
+          <li class="mb-1">
+            Favourite Anime : {{profile.favourite_anime}}
+          </li>
+          <li class="mb-1">
+            Favourite Genre: {{profile.favourite_genres}}
+          </li>
+        </ul>
+      </div>
+      <div class='card-body'>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-8 col-xl-9">
+    <div class="card">
+      <div class="card-header">
+        <ul class="nav nav-tabs">
+          <li class="nav-item">
+            <a class="nav-link active" href="#recent" data-toggle="tab">Active</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#replies" data-toggle="tab">Replies</a>
+          </li>
+        </ul>
+      </div>
+      <div class="tab-content">
+        <div id="recent" class="tab-pane fade show active">
+          {% if recent.count == 0 %}
+          <h2 class='text-center p-5 text-info' style='height: 20vh'>No Recent activity</h2>
+          {% endif %}
+          {% for item in recent %}
+          <div class="card-body">
+            <div class="media">
+              <img src={{profile.image.url}} width="36" height="36" class="rounded-circle mr-2" alt="Kathy Davis">
+              <div class="media-body">
+                <small class="float-right text-navy">{{item.published_date| timesince}} ago</small>
+                <strong>{{item.user.username}}</strong> posted topic <a
+                  href="{% url 'reply_list' item.slug %}"><strong>{{item.title}}</strong></a>
+                <br>
+                <small class="text-muted">{{item.published_date}}</small>
+                <br>
+              </div>
+            </div>
+          </div>
+          <hr>
+          {% endfor %}
+        </div>
+        <div id="replies" class="tab-pane fade">
+          {% if replies.count == 0 %}
+          <h2 class='text-center p-5 text-info' style='height: 20vh'>No Recent Replies</h2>
+          {% endif %}
+          {% for item in replies %}
+          <div class="card-body">
+            <div class="media">
+              <img src={{profile.image.url}} width="36" height="36" class="rounded-circle mr-2" alt="Kathy Davis">
+              <div class="media-body">
+                <small class="float-right text-navy">{{item.published_date| timesince}} ago</small>
+                <strong>{{item.user.username}}</strong> replied in <a
+                  href="{% url 'reply_list' item.topic.slug %}"><strong>{{item.topic.title}}</strong></a>
+                <br>
+                <small class="text-muted">{{item.published_date}}</small>
+                <br>
+              </div>
+            </div>
+          </div>
+          <hr>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+{% endblock content %}

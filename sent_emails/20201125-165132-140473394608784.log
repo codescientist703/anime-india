@@ -1,0 +1,26 @@
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Password reset on 127.0.0.1:8000
+From: webmaster@localhost
+To: agentx@gmail.com
+Date: Wed, 25 Nov 2020 11:21:32 -0000
+Message-ID: 
+ <160630329260.14615.10711728023768658732@madscientist-System-Product-Name>
+
+
+You're receiving this email because you requested a password reset for your user account at 127.0.0.1:8000.
+
+Please go to the following page and choose a new password:
+
+http://127.0.0.1:8000/password-reset/Mg/adwk5w-f046895de25892c78f0f21611890b432/
+
+Your username, in case you’ve forgotten: agentx
+
+Thanks for using our site!
+
+The 127.0.0.1:8000 team
+
+
+
+-------------------------------------------------------------------------------

@@ -1,0 +1,54 @@
+.label {
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .hcolumn-1 {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .profile-container {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-img {
+    margin-right: 1rem;
+  }
+}
+
+.navbar .nav-item:hover {
+  background-color: #421c52;
+  height: 100%;
+}
+
+.row.display-flex {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.row.display-flex > [class*='col-'] {
+  display: flex;
+  flex-direction: column;
+}
+
+body {
+  font-family: 'Lato', sans-serif;
+}
+
+.headings {
+  font-family: 'Merriweather', sans-serif;
+}
+.dropdown-toggle:after {
+  content: none;
+}
+.card-horizontal {
+  display: flex;
+  flex: 1 1 auto;
+}
+.pure-white {
+  color: #ffffff;
+}
