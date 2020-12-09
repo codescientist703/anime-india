@@ -10,6 +10,8 @@ ALLOWED_HOSTS = [os.environ['WEBSITE_HOSTNAME']
 
 # Configure Postgres database; the full username is username@servername,
 # which we construct using the DBHOST value.
+
+my_mane_is = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
