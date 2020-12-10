@@ -18,7 +18,7 @@
   </section>
   <div class="col-xs-12 col-md-3  bg-primary">
     <div class="d-flex flex-grow-1 align-items-center align-content-center profile-container" style="padding: 1rem;">
-      <div><img class="profile-img" src="{% static 'img/avatar.png' %}" style="width: 60px;margin-bottom: 0.5rem;">
+      <div><img class="profile-img" src="{{object.reply.user.profile.image.url}}" style="width: 60px;margin-bottom: 0.5rem;">
       </div>
       <div class='ml-0'>
         <a href="{% url 'profile' object.reply.user.username %}">
@@ -175,7 +175,7 @@
 
   <div class="bg-primary mb-0 d-inline-flex">
     <div class="d-flex flex-grow-1 align-items-center align-content-center profile-container" style="padding: 1rem;">
-      <div><img class="profile-img" src="{% static 'img/avatar.png' %}" style="width: 60px;margin-bottom: 0.5rem;">
+      <div><img class="profile-img" src="{{request.user.profile.image.url}}" style="width: 60px;margin-bottom: 0.5rem;">
       </div>
       <div>
         <p class="d-flex justify-content-lg-center justify-content-xl-center mb-0">
