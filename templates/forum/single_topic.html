@@ -18,12 +18,19 @@
   </section>
   <div class="col-xs-12 col-md-3  bg-primary">
     <div class="d-flex flex-grow-1 align-items-center align-content-center profile-container" style="padding: 1rem;">
-      <div><img class="profile-img" src="{{object.reply.user.profile.image.url}}" style="width: 60px;margin-bottom: 0.5rem;">
+      <div><img class="profile-img" src="{% if object.reply.user %}{{object.reply.user.profile.image.url}} {% else %} 
+        https://djangoforumstorage.blob.core.windows.net/media/avatar.jpg {% endif %}" 
+        style="width: 60px;margin-bottom: 0.5rem;">
       </div>
       <div class='ml-0'>
-        <a href="{% url 'profile' object.reply.user.username %}">
+        <a href="{% if object.reply.user %}{% url 'profile' object.reply.user.username %}{% endif %}">
           <small
-            class="text-center d-flex justify-content-lg-center pure-white mb-1">{{object.reply.user.username}}</small>
+            class="text-center d-flex justify-content-lg-center pure-white mb-1">
+            {% if object.reply.user %}{{object.reply.user.username}}
+            {% else %}
+            <i>Deleted</i>
+            {% endif %}
+          </small>
         </a>
         <small class="d-flex justify-content-lg-center pure-white">Join Date:
           {{object.reply.user.date_joined|date}}</small>
@@ -34,7 +41,6 @@
     {% if  request.user.is_authenticated %}
     <div class='d-flex justify-content-end' id='mod-{{object.reply.id}}'>
       {% if object.reply.user == request.user and object.reply.is_deleted == False%}
-
       <a href="{% url 'edit_reply' object.reply.id %}" class='text-right mb-0' data-toggle="tooltip"
         data-placement="bottom" title="edit the post">
         <i class='fas fa-edit btn text-right text-primary mb-0'></i>
@@ -57,9 +63,6 @@
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
-            </div>
-            <div class="modal-body">
-              Press Yes to confirm
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>

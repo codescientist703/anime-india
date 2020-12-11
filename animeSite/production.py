@@ -22,6 +22,12 @@ DATABASES = {
     }
 }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'cache_table',
+    }
+}
 DEFAULT_FILE_STORAGE = 'animeSite.custom_azure.AzureMediaStorage'
 STATICFILES_STORAGE = 'animeSite.custom_azure.AzureStaticStorage'
 

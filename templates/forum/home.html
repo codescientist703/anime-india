@@ -30,7 +30,7 @@
             <td class="hcolumn-1">{{object.replies}}</td>
             
             <td class="hcolumn-1">
-            {% if object.count != 0 %}
+            {% if object.count != 0 and object.latest.user %}
               <img class="float-left" src="{{object.latest.user.profile.image.url}}"
                 style="width: 30px; height: 30px" />&nbsp;
               &nbsp;

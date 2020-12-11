@@ -67,10 +67,14 @@ class CategoryTopics(ListView):
 
         for item in data:
             replies = Reply.objects.filter(topic=item)
-
-            last_username = replies.last().user.username
-            last_date = replies.last().published_date
-            last_image = replies.last().user.profile.image.url
+            if replies.last():
+                last_date = replies.last().published_date
+                if replies.last().user != None:
+                    last_username = replies.last().user.username
+                    last_image = replies.last().user.profile.image.url
+                else:
+                    last_image = 'https://djangoforumstorage.blob.core.windows.net/media/avatar.jpg'
+                    last_username = 'deleted user'
 
             result.append({
                 'topic': item,
@@ -246,7 +250,7 @@ def editReply(request, id):
 
 # Search field in the forum
 def search(request):
-    if 'query' in request.GET and request.is_ajax():
+    if 'query' in request.GET:
         users = User.objects.filter(
             username__startswith=request.GET.get('query'))
         result = []
