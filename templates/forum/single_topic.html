@@ -6,10 +6,9 @@
 <ol class="breadcrumb" style="margin-top: 2rem;">
   <li class="breadcrumb-item"><a href="{% url 'home' %}"><span>Home</span></a></li>
   <li class="breadcrumb-item"><a href="{% url 'topic_list' category %}"><span>{{category}}</span></a></li>
-  <li class="breadcrumb-item"><a href="{% url 'reply_list' topic_id %}"><span>{{title}}</span></a></li>
+  <li class="breadcrumb-item text-break"><a href="{% url 'reply_list' topic_id %}"><span>{{title}}</span></a></li>
 </ol>
 {% for object in  reply_list %}
-
 <div class="row display-flex"
   style="text-shadow: 0px 0px;margin-right: 0.5rem;margin-left: 0.5rem;border-width: 2px;border-color: #421c52;border-bottom-style: solid;">
   <section class="text-white p-2 mt-3 d-flex justify-content-between" style='background: #732c7b;width: 100%'>
@@ -19,13 +18,12 @@
   <div class="col-xs-12 col-md-3  bg-primary">
     <div class="d-flex flex-grow-1 align-items-center align-content-center profile-container" style="padding: 1rem;">
       <div><img class="profile-img" src="{% if object.reply.user %}{{object.reply.user.profile.image.url}} {% else %} 
-        https://djangoforumstorage.blob.core.windows.net/media/avatar.jpg {% endif %}" 
-        style="width: 60px;margin-bottom: 0.5rem;">
+        https://djangoforumstorage.blob.core.windows.net/media/avatar.jpg {% endif %}"
+          style="width: 60px;margin-bottom: 0.5rem;">
       </div>
       <div class='ml-0'>
         <a href="{% if object.reply.user %}{% url 'profile' object.reply.user.username %}{% endif %}">
-          <small
-            class="text-center d-flex justify-content-lg-center pure-white mb-1">
+          <small class="text-center d-flex justify-content-lg-center pure-white mb-1">
             {% if object.reply.user %}{{object.reply.user.username}}
             {% else %}
             <i>Deleted</i>
