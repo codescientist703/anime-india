@@ -78,7 +78,7 @@
               <div class="media-body">
                 <small class="float-right text-navy">{{item.published_date| timesince}} ago</small>
                 <strong>{{item.user.username}}</strong> posted topic <a
-                  href="{% url 'reply_list' item.slug %}"><strong>{{item.title}}</strong></a>
+                  href="{% url 'reply_list' item.slug %}" class='text-break'><strong>{{item.title}}</strong></a>
                 <br>
                 <small class="text-muted">{{item.published_date}}</small>
                 <br>
@@ -99,7 +99,7 @@
               <div class="media-body">
                 <small class="float-right text-navy">{{item.published_date| timesince}} ago</small>
                 <strong>{{item.user.username}}</strong> replied in <a
-                  href="{% url 'reply_list' item.topic.slug %}"><strong>{{item.topic.title}}</strong></a>
+                  href="{% url 'reply_list' item.topic.slug %}" class='text-break'><strong>{{item.topic.title}}</strong></a>
                 <br>
                 <small class="text-muted">{{item.published_date}}</small>
                 <br>
