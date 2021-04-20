@@ -24,6 +24,8 @@ class ForumHome(ListView):
         categories = Category.objects.all()
         table_data = []
         for category in categories:
+            if category.name == 'Trash':
+                continue
             categoryObject = Topic.objects.filter(category=category)
             replies = 0
             for topic in categoryObject:
