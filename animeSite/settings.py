@@ -26,7 +26,7 @@ SECRET_KEY = 'e4io4-+#wc3sb=h)#y@y3cg^^ao6#@44cy*y0p2*s^a94-n9gm'
 DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 
 if DEBUG == False:
-    ALLOWED_HOSTS = ['139.59.56.192']
+    ALLOWED_HOSTS = ['139.59.56.192', 'animeindia.tech']
 else:
     ALLOWED_HOSTS = []
 
