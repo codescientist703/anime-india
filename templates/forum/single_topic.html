@@ -289,7 +289,7 @@
       let speech = new SpeechSynthesisUtterance();
       let id = $(this).attr('id')
       id = id.replace('say-', '')
-      speech.lang = "en-US";
+      speech.lang = "en-IN";
       speech.text = $(`#content-${id}`).text();
       speech.volume = 1;
       speech.rate = 0.9;
