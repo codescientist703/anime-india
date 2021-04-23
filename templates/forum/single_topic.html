@@ -96,6 +96,9 @@
 
       {% else %}
       <p class='mb-0'>
+        <a style="font-size:24px;color: #0EBFE9	;" id='say-{{object.reply.id}}' class='speech'><i
+            class="fas fa-comment-dots mr-5" data-toggle="tooltip" data-placement="bottom" title="Text to speech"></i>
+        </a>
         {% if request.user|has_group:"moderator" or request.user.is_superuser %}
         <small class='mr-2 mb-1' id='flag_counter-{{object.reply.id}}'>{{object.reply.total_flags}}</small>
         {% endif %}
@@ -103,6 +106,7 @@
           data-target="#confirmationModal-{{object.reply.id}}"><i class="fa fa-flag fa-border mr-5"
             data-toggle="tooltip" data-placement="bottom" title="Flag the post"></i>
         </a>
+
         <!-- Modal -->
         <div class="modal fade" id="confirmationModal-{{object.reply.id}}" tabindex="-1" role="dialog"
           aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -280,6 +284,17 @@
           $(`#content-${id}`).html("<p class='text-muted font-italic'>Comment Deleted</p>")
         }
       })
+    })
+    $('.speech').click(function () {
+      let speech = new SpeechSynthesisUtterance();
+      let id = $(this).attr('id')
+      id = id.replace('say-', '')
+      speech.lang = "en-US";
+      speech.text = $(`#content-${id}`).text();
+      speech.volume = 1;
+      speech.rate = 0.9;
+      speech.pitch = 1;
+      window.speechSynthesis.speak(speech);
     })
 
   }

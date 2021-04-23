@@ -1,7 +1,7 @@
 {% extends '../common/base.html' %}
 {% load static %}
 {% block content %}
-<div class="login-clean" style='background: #e5c9f5'>
+<div class="login-clean" style='background: #e5c9f500'>
   <form method="post" style="background: #f4f8fb;">
     {% csrf_token %}
     {% for message in messages  %}
