@@ -104,8 +104,8 @@ else:
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
             'NAME': 'forum',
-            'USER': 'nihal',
-            'PASSWORD': 'Allthebest@18',
+            'USER': os.environ.get('DB_USER', ''),
+            'PASSWORD': os.environ.get('DB_PASSWORD', ''),
             'HOST': 'localhost',
             'PORT': '',
         }
