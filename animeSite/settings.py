@@ -20,14 +20,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'e4io4-+#wc3sb=h)#y@y3cg^^ao6#@44cy*y0p2*s^a94-n9gm'
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 
 if DEBUG == False:
     ALLOWED_HOSTS = ['139.59.56.192', 'animeindia.tech', 'www.animeindia.tech']
+    with open('/etc/secret_key.txt') as f:
+        SECRET_KEY = f.read().strip()
+
 else:
+    SECRET_KEY = '123'
     ALLOWED_HOSTS = []
 
 
